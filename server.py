@@ -4,10 +4,11 @@
 import socket
 import random
 
+
 # Standard loopback interface address (localhost)
 HOST = socket.gethostbyname(socket.gethostname())
 # port to listen on (non-priveleged ports are > 1023)
-PORT = random.randint(5010, 5090)
+PORT = 5010
 
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
@@ -19,5 +20,13 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
 
     connection, address = server.accept()
 
-    with conn:
-        print("Connected by {}".format(address))
+
+    with connection:
+        print("\t[+] Connected by {}".format(address))
+        while True:
+            data = connection.recv(1024)
+            if not data:
+                print("\t[-] No Data Found")
+                break
+
+            connection.sendall(data)
