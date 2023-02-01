@@ -4,21 +4,20 @@
 import socket
 import random
 
+# Standard loopback interface address (localhost)
 HOST = socket.gethostbyname(socket.gethostname())
+# port to listen on (non-priveleged ports are > 1023)
 PORT = random.randint(5010, 5090)
 
 
-server = socket.socket(
-    socket.AF_INET,
-    socket.SOCK_STREAM
-)
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
+    server.bind((HOST, PORT))
+    server.listen()
+    print("[+] OK: Server started on port: {}".format(PORT))
 
-server.bind((HOST, PORT))
-server.listen()
+    print("[+] OK: Listening . . .")
 
-connection, address = server.accept()
-print(PORT)
-print(HOST)
-print("{} {}".format(connection, address))
+    connection, address = server.accept()
 
-socket.close()
+    with conn:
+        print("Connected by {}".format(address))
