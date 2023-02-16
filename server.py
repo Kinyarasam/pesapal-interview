@@ -31,7 +31,7 @@ async def handle_client(
         data = await reader.read(BUFF_SIZE)
         message = data.decode()
         addr, port = writer.get_extra_info("peername")
-        print(f'Received the message from: {addr} {port} {message!r}')
+        print("Received the message from: {} {} {!r}".format(addr, port, message))
 
         writer.write(data)
         await writer.drain()
@@ -47,21 +47,17 @@ async def run_server() -> None:
         Nothing.
     """
     server = await asyncio.start_server(handle_client, HOST, PORT)
-
     async with server:
-        print("Listening . . .")
-        await server.serve_forever()
-
-        # tasks = []
-
-        # for client in range(10):
-            # try:
-                # asyncio.create_task(handle_client(*asyncio.open_connection(sock=client)))
-                # await asyncio.gather(*tasks)
-            # except Exception as e:
-                # print("[{}] {}".format(e.__class__.__name__, e))
+        try:
+            print("Listening . . .")
+            await server.serve_forever()
+        except KeyboardInterrupt as e:
+            print("[{}] {}".format(e.__class__.__name__, e))
 
 
 if __name__ == '__main__':
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(run_server())
+    try:
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(run_server())
+    except KeyboardInterrupt as e:
+        print("[{}] Bye.".format(e.__class__.__name__))
